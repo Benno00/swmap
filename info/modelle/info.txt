@@ -1,0 +1,14 @@
+SA Choke			T5 Zumischung Tiefe bei Flap ( 0 - 30% )
+SB Stabi Mode			T6 Ail Differencial ( 0 - 50% )
+SC Flight Mode			LS Flap
+SD Zündung			RS Selftest, temporär
+SE Landing Mode Override
+SF Engine Off
+SG Beleuchtung
+SH Ansagen/ Calibration reset
+S1 Gyro Gain
+S2 ---
+
+
+
+

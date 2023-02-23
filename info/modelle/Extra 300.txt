@@ -1,0 +1,20 @@
+SA ---                                       FS1 ---
+SB Stabi Mode                         FS2 ---
+SC Flight Modes                       FS3 ---
+SD Beleuchtung                        FS4 ---
+SE                                            FS5 ---
+SF Engine Off                            FS6 ---
+SG Selftest, temporär
+SH Ansagen/ Calibration reset
+SI  ---
+SJ UniSense Anzeige Max. Werte
+
+S1 Gyro Gain
+S2 Lautstärke
+
+LS --
+RS ---
+
+T5 ---
+T6 ---
+
