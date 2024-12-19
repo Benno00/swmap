@@ -1,0 +1,37 @@
+-- Positions for X14 transmitters
+local sw= { 
+	{"SA",  5,  28, 165, nil, nil, nil, nil,nil,nil,nil,FONT_XS,165, 55, COLOR_ORANGE},
+	{"SB", 5, 56, 195, 195, 56 ,208,49 ,nil,nil,nil,FONT_XS,208, 55, COLOR_ORANGE },
+	{"SC", -1, 56, 420, 420, 56 ,410,49, nil,nil,nil,FONT_XS,410, 55, COLOR_ORANGE },
+	{"SD", -1, 28, 455, nil, nil, nil, nil, nil,nil,nil,FONT_XS,455, 55, COLOR_ORANGE},
+	{"SE",   5, 3, 185, nil, nil, nil, nil,nil,nil,nil,FONT_XS,186, 29, COLOR_ORANGE },
+	{"SF",  -1, 1, 432, nil, nil, nil, nil,nil,nil,nil,FONT_XS,432, 29, COLOR_ORANGE },
+	
+	{"FS1", 5, 200, 268, 268, 200, 268, 180,COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, nil,268,180, COLOR_GREEN },
+	{"FS2", 5, 225, 294, 294, 225, 294, 180,COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, nil,294,180, COLOR_GREEN },
+	{"FS3", -1, 225, 320, 320, 225, 320, 180,COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW,nil, 320,180, COLOR_GREEN },
+	{"FS4", -1, 200, 347, 347, 200, 347, 180,COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW,nil, 347,180, COLOR_GREEN },
+	-- nicht verbaut
+	{"FS5", 0,0},
+	{"FS6", 0,0},
+	-- analog
+	{"Pot1", 200, 1, 300, 275,  1, 275,  58,nil,nil,nil,FONT_XS,275, 60, COLOR_GREEN },
+	{"Pot2", 310, 1, 410, 339,  1, 339,  58,nil,nil,nil,FONT_XS,339, 60, COLOR_MAGENTA },
+	{"Drehg. li.",  5, 96, 145, nil, nil, nil, nil, nil,nil,nil,FONT_XS,143,115, COLOR_YELLOW },
+	{"Drehg. re.", -1, 96, 473, nil, nil, nil, nil,nil,nil,nil,FONT_XS,475,115,COLOR_YELLOW },
+	-- Trimmung links 	
+	{"T4 links",  5, 120, 265, 265,120, 265, 147,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,265,150,COLOR_YELLOW },
+	{"T4 rechts", 5, 140, 275, 275,140, 275, 150,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,275,150, COLOR_GREEN },
+	{"T3 tief", 165,113, 290, nil, nil, nil, nil,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,290,130,COLOR_YELLOW },
+	{"T3 hoch", 165, 80, 290, 290,  80, 290, 118,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,290,120,COLOR_YELLOW },
+	
+	-- Trimmung rechts	
+	{"T2 tief", 345, 113, 480 ,345, 113, 323, 130,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,322,132,COLOR_GREEN},
+	{"T2 hoch", 322, 80, 480 ,322, 80, 322, 118,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,322,118,COLOR_GREEN},
+	{"T1 links", -1, 120, 333, 333, 120, 333, 147,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,333,150,COLOR_RED },
+	{"T1 rechts",-1, 140, 343, 343, 140, 343, 150,COLOR_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA, FONT_XS,345,150,COLOR_RED },
+-- nicht verbaut
+	{"T5", 0, 0}, 
+	{"T6", 0, 0}, 
+}
+return sw
