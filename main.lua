@@ -4,16 +4,17 @@
 --  1.8 B. Jurisch 17.04.2024 err message if Staandard.lua not available and no modell.lua exist
 --  requires at least Ethos 1.5.3
 
-local version="2.4"
+local version="2.5"
 local translations = {en="Switch Mapping", de="Schalter Zuordnung",}
 local debug_flag=false         --> for debug mode	liste daten in load_erw ggf. aktivieren
 local debug_mode=0
-
+local debug_col ={string.char(27).."[0m", string.char(27).."[36m"}
+local wait = 0 
 -- Get information for Transmitter
 local sys = system.getVersion()   	
-
 local RADIO=sys.board
-
+local KAVAN="V"
+local kaf=false
 
 local SWMAP=nil
 local anz_dig=0	
@@ -31,15 +32,13 @@ local load_def_ok=false
 local load_def_erw=false
 local disp=false
 local dix=0
-local kaf=false
-local wait = 0 
 local screen=false
 local err=nil
 local err_flag=false
 local err_config=false
 local langu={}
 
-local out_txt=""
+--local out_txt="" ab Version 2.5 nicht mehr
 local debugflag=false
 
 local curposl=0
@@ -260,7 +259,7 @@ local function add_positions(na,idx)
 	end
 	if ok==false then 
 		err_config=true 
-		out_txt=langu[20]..na.."\n"..out_txt 
+		--out_txt=langu[20]..na.."\n"..out_txt 
 	end	
 end
 
@@ -353,7 +352,7 @@ local function load_data(widget,na)
 	if widget.global==nil then 
 		widget.global=false
 	end
-	print("widget.global:",widget.global)
+	--print("widget.global:",widget.global)
 	
 	if na==nil then na=model.name()..".lua" end
 	if widget.global==true then na="global.lua" end
@@ -361,10 +360,10 @@ local function load_data(widget,na)
 	local file = "/scripts/swmap/modelle/"..na
 	
 	if existFile(file)==true then
-		print("-------------------------------------")
-		print("Modellname:",model.name())
-		print("load Date from :",file)
-		print("-------------------------------------")
+		--print("-------------------------------------")
+		--print("Modellname:",model.name())
+		--print("load Date from :",file)
+		--print("-------------------------------------")
 		load_def_ok=false 
 		load_def_erw=false
 		data_Value=nil
@@ -475,11 +474,11 @@ local function loadLib(name)
   --print("Lade LIB:", name)
   if system.getLocale() == "de" then	
 	
-	out_txt= "Lade /scripts/swmap/lib/"..name..".lua".."\n RADIO:"..RADIO.."\n"
+	--out_txt= "Lade /scripts/swmap/lib/"..name..".lua".."\n RADIO:"..RADIO.."\n"
 	--print("Deutsche Version:","/scripts/swmap/lib/"..name..".lua")
 	lib = dofile("/scripts/swmap/lib/"..name..".lua")
   else
-	out_txt= "Load /scripts/swmap/lib/"..name.."_"..system.getLocale()..".lua".."\n RADIO:"..RADIO.."\n"
+	--out_txt= "Load /scripts/swmap/lib/"..name.."_"..system.getLocale()..".lua".."\n RADIO:"..RADIO.."\n"
 	--print("Englische Version:","/scripts/swmap/lib/"..name.."_"..system.getLocale()..".lua")
 	lib = dofile("/scripts/swmap/lib/"..name.."_"..system.getLocale()..".lua")
   end
@@ -503,6 +502,7 @@ function display(widget,typ,idx)
 	local prefixtext=""	
 	local s_font_w, s_font_h = lcd.getTextSize(na)
 	lcd.color(widget.farbe)
+	if dis_na==nil then dis_na="" end   -- 20.12.2024 2.5 B. Jurisch
 	if SWMAP[idx][0]~="DIG" and widget.DisplaySwitchNames == false then 
 		na=""
 	end
@@ -517,20 +517,22 @@ function display(widget,typ,idx)
 				na=SWMAP[idx][1]
 			end
 		end
-		
-		if SWMAP[idx][12]<0 then
-			prefixtext = dis_na.." "..na 
-		else
-			prefixtext = na.." "..dis_na
-		end
-		
+		if SWMAP[idx][12]~=nil then 				-- 2.5 B. Jurisch 20.12.2024
+			if SWMAP[idx][12]<0 then
+				prefixtext = dis_na.." "..na 
+			else
+				prefixtext = na.." "..dis_na
+			end
+		end											-- 2.5 B. Jurisch 20.12.2024
 			
 	else
-		if SWMAP[idx][12]<0 then
-			prefixtext = dis_na.." "..na 
-		else
-			prefixtext = na.." "..dis_na
-		end
+		if SWMAP[idx][12]~=nil then 				-- 2.5 B. Jurisch 20.12.2024
+			if SWMAP[idx][12]<0 then
+				prefixtext = dis_na.." "..na 
+			else
+				prefixtext = na.." "..dis_na
+			end
+		end											-- 2.5 B. Jurisch 20.12.2024
 		
 		if SWMAP[idx][0]=="ANA" and widget.DisplayAnalog==false then
 			prefixtext =""	
@@ -674,7 +676,7 @@ function display(widget,typ,idx)
 			end
 		end
 		---- circle around encoder/switch/functionswitch or trim
-		if widget.circle_sw==true then 
+		if a==true then 
 			if SWMAP[idx][23]~=nil and SWMAP[idx][24]~=nil and SWMAP[idx][25]~=nil then
 				if (SWMAP[idx][0]=="DIG" and string.sub(SWMAP[idx][1],1,2)==sw_tast) or (SWMAP[idx][0]~="DIG" and SWMAP[idx][1]==sw_tast) then
 					lcd.color(SWMAP[idx][25])
@@ -734,8 +736,8 @@ local function create_tables()
 	end
 	
 	--read all switches from transmitter 
-	out_txt=out_txt.."\n".."TYP;Name \n"
-	out_txt=out_txt.."-------------------------- \n"
+	--out_txt=out_txt.."\n".."TYP;Name \n"
+	--out_txt=out_txt.."-------------------------- \n"
 	if debug_flag==true then deprint("function create_tables: read all switches from transmitter") end	
 	for i=0,100,1 do 
 		local me = system.getSource({category=CATEGORY_SWITCH_POSITION, member=i})
@@ -744,11 +746,11 @@ local function create_tables()
 				if SWMAP[anz_dig]==nil then SWMAP[anz_dig]={} end
 				SWMAP[anz_dig][0]="DIG"
 				SWMAP[anz_dig][1]=me:name()
-				if string.sub(me:name(),1,1)=="S" then 
-					out_txt=out_txt.."DIG"..";"..string.sub(me:name(),1,2).."\n"
-				else
-					out_txt=out_txt.."DIG"..";"..me:name().."\n"
-				end
+				--if string.sub(me:name(),1,1)=="S" then 
+				--	out_txt=out_txt.."DIG"..";"..string.sub(me:name(),1,2).."\n"
+				--else
+				--	out_txt=out_txt.."DIG"..";"..me:name().."\n"
+				--end
 				if me:state()==true then
 					SWMAP[anz_dig][2]=1
 					SWMAP[anz_dig][3]=1
@@ -772,7 +774,7 @@ local function create_tables()
 				if SWMAP[anz_dig]==nil then SWMAP[anz_dig]={} end
 				SWMAP[anz_dig][0]="FUN"
 				SWMAP[anz_dig][1]=me:name()
-				out_txt=out_txt.."FUN"..";"..me:name().."\n"
+				--out_txt=out_txt.."FUN"..";"..me:name().."\n"
 				if me:state()==true then
 					SWMAP[anz_dig][2]=1
 					SWMAP[anz_dig][3]=1
@@ -800,7 +802,7 @@ local function create_tables()
 				SWMAP[anz_ana][1]=na
 				SWMAP[anz_ana][2]=me:rawValue()
 				SWMAP[anz_ana][3]=me:rawValue()
-				out_txt=out_txt.."ANA"..";"..na.."\n"
+				--out_txt=out_txt.."ANA"..";"..na.."\n"
 				--deprint("TYP:"..SWMAP[anz_ana][0].." Bez:"..SWMAP[anz_ana][1].." VALUE: "..SWMAP[anz_ana][2].." IDX:"..anz_ana,i) 
 				anz_ana=anz_ana+1
 				
@@ -827,7 +829,7 @@ local function create_tables()
 					SWMAP[anz_ana][1]=me:name()
 					SWMAP[anz_ana][2]=me:rawValue()
 					SWMAP[anz_ana][3]=me:rawValue()
-					out_txt=out_txt.."TRM"..";"..me:name().."\n"
+					--out_txt=out_txt.."TRM"..";"..me:name().."\n"
 					--deprint("TYP:"..SWMAP[anz_ana][0].." Bez:"..SWMAP[anz_ana][1].." VALUE: "..SWMAP[anz_ana][2].." IDX:"..anz_ana) 
 					anz_ana=anz_ana+1
 			end
@@ -925,6 +927,13 @@ end
 
 
 local function paint(widget)
+	-- B. Jurisch 20.12.2024-------------------------------Start--------------------
+	if string.sub(sys.version,1,3)>"1.5" and widget.circle_sw==true then 
+		widget.circle_sw=false
+	end
+	
+	-- B. Jurisch 20.12.2024-------------------------------Ende---------------------
+	
 	if err~=nil or kaf==true then 
 		widget.w, widget.h = lcd.getWindowSize()
 		lcd.color(widget.backcolor)
@@ -991,8 +1000,11 @@ local function configure(widget)
 	
 	
 	-- Funktion/logical circle switch
-	line = form.addLine(langu[7])
-	form.addBooleanField(line, nil, function() return widget.circle_sw end, function(value) widget.circle_sw = value end)	
+	-- Ab 1.6 geht dies enicht mehr
+	--line = form.addLine(langu[7])
+	--form.addBooleanField(line, nil, function() return widget.circle_sw end, function(value) widget.circle_sw = value end)	
+	widget.circle_sw=false
+		
 		
 	-- backcolor
 	line = form.addLine(langu[8])
@@ -1009,26 +1021,28 @@ local function configure(widget)
 
 	for i=0,anz_ana,1 do
 		if SWMAP[i]~=nil then
-			if SWMAP[i][0]=="DIG" then
-				line = form.addLine(SWMAP[i][1])
-				form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
-			end
-			
-			if SWMAP[i][0]=="ANA" then
-				line = form.addLine(SWMAP[i][1])
-				form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
-			end
-			
-			if SWMAP[i][0]=="TRM" then
-				--print("trim:",widget.source:name())
-				line = form.addLine(SWMAP[i][1])
-				form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
-			end
-			
-			if SWMAP[i][0]=="FUN" then
-				line = form.addLine(SWMAP[i][1])
-				form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
-			end
+			if SWMAP[i][5]~=nil then 				-- 2.5 B. Jurisch 20.12.2024
+				if SWMAP[i][0]=="DIG" then
+					line = form.addLine(SWMAP[i][1])
+					form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
+				end
+				
+				if SWMAP[i][0]=="ANA" then
+					line = form.addLine(SWMAP[i][1])
+					form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
+				end
+				
+				if SWMAP[i][0]=="TRM" then
+					--print("trim:",widget.source:name())
+					line = form.addLine(SWMAP[i][1])
+					form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
+				end
+				
+				if SWMAP[i][0]=="FUN" then
+					line = form.addLine(SWMAP[i][1])
+					form.addTextField(line, nil, function() return SWMAP[i][5] end, function(value) SWMAP[i][5] = value end)
+				end
+			end										-- 2.5 B. Jurisch 20.12.2024
 		else
 			break
 		end
@@ -1069,7 +1083,7 @@ local function write(widget)
 end
 
 local function check_swmap()
-	if string.sub(RADIO,1,3)=="V20" then 
+	if string.sub(RADIO,1,1)==KAVAN then 
 		kaf=true
 	end
 	if load_def_ok==true then 
@@ -1081,16 +1095,25 @@ local function check_swmap()
 		load_def() 
 	end
 	
-	if err_config==true then write_file("/scripts/swmap/error.txt",out_txt) end
+	--if err_config==true then write_file("/scripts/swmap/error.txt",out_txt) end
 end
 	
 
 
 local function wakeup(widget)
-
-	if lcd.isVisible()==false then
-		return true
+	if sys.simulation==true then 
+		if os.time()>=wait then 
+			wait=os.time() + 60
+			--collectgarbage("collect")
+			mem = system.getMemoryUsage()
+			mem1=string.format("%.2f",(mem["luaRamAvailable"]/1024))
+			mem2=string.format("%.2f",(mem["luaBitmapsRamAvailable"]/1024))
+			print(debug_col[2].."Widget: "..name().." "..version, "Uhrzeit:", os.date("%H:%M:%S",os.time()),"lua Ram Available: "..mem1.."kB","lua Bitmaps Ram Available: "..mem2.."kB"..debug_col[1]) 	
+		end
 	end
+	--if lcd.isVisible()==false then
+	--	return true
+	--end
 	if err~=nil and lcd.isVisible() then
 		if err_flag==false then 
 			lcd.invalidate()
@@ -1156,7 +1179,7 @@ local function event(widget, category, value, x, y)
 		return true	
 	end
   --print("Event received:", category, value, "x:"..x, "Y:"..y)	
-  if sys.simulation==true and debug_flag==true then 
+	if sys.simulation==true and debug_flag==true then 
 	  deprint("Event received:", category, value, x, y)
 	  if category == EVT_KEY and value == KEY_EXIT_BREAK then
 		return true
