@@ -93,6 +93,64 @@ else
 		  }
 end  
 
+local function deprint(txt)
+
+	--[[ Colortable for rint output 
+	Color							Foreground					Background			
+	color="Cyan"
+	back="Dark gray"
+	so="Bold"
+	local co={
+	{"Default",						string.char(27).."[0m",	 	nil},
+	{"Black", 						string.char(27).."[30m",	string.char(27).."[40m" },
+	{"Red",  						string.char(27).."[31m",	string.char(27).."[41m" },	 
+	{"Green", 		 				string.char(27).."[32m",	string.char(27).."[42m"	},
+	{"Yellow", 			 			string.char(27).."[33m",	string.char(27).."[43m"	},
+	{"Blue",		 				string.char(27).."[34m",	string.char(27).."[44m"	},
+	{"magenta",			 			string.char(27).."[35m",	string.char(27).."[45m"	},
+	{"Cyan", 						string.char(27).."[36m",	string.char(27).."[46m"	},
+	{"Light gray", 					string.char(27).."[37m",	string.char(27).."[47m"	},
+	{"Dark gray", 					string.char(27).."[90m",	string.char(27).."[100m"},
+	{"Light red",					string.char(27).."[91m",	string.char(27).."[101m"},	
+	{"Light green",			 		string.char(27).."[92m",	string.char(27).."[102m"},	
+	{"Light yellow",		 		string.char(27).."[93m",	string.char(27).."[103m"},	
+	{"Light blue",		 			string.char(27).."[94m",	string.char(27).."[104m"},	
+	{"Light magenta",				string.char(27).."[95m",	string.char(27).."[105m"},	
+	{"Light cyan",		 			string.char(27).."[96m",	string.char(27).."[106m"},	
+	{"White",		 				string.char(27).."[97m",	string.char(27).."[107m"},	
+	{"Bold",						string.char(27).."[1m",	 	nil}, 
+	{"Underline",					string.char(27).."[4m",	 	nil}, 
+	{"No underline",				string.char(27).."[24m",	nil}, 	 
+	{"Reverse text",				string.char(27).."[7m",	 	nil}, 
+	{"Positive text",				string.char(27).."[27m",    nil},
+	}
+	local co_nr=0
+	local ba_nr=0
+	local so_nr=0
+	for i=1,#co,1 do
+		if co[i][1]==color then 
+			co_nr=i 
+			break 
+		end
+	end
+	for i=1,#co,1 do
+		if co[i][1]==back then 
+			ba_nr=i 
+			break 
+		end
+	end
+	for i=1,#co,1 do
+		if co[i][1]==so then 
+			so_nr=i 
+			break 
+		end
+	end
+	txt=string.char(27)..co[ba_nr][3]..string.char(27)..co[co_nr][2]..string.char(27)..co[so_nr][2]..txt..string.char(27).."[0m"
+	--]]
+	--print in cyan
+	print(string.char(27).."[36m",txt,string.char(27).."[0m")
+	
+end
 
 local function list_tab(array,anz)
 	--print("Liste Table",array," Anzahl:",anz, " tabsaetze:", #array)
@@ -182,16 +240,7 @@ function write_log(txt)
 	io.close(f)
 end
 
--- debug function
-function deprint(txt)
-	if debugflag==true then
-		txt=os.date("%d.%m.%Y",os.time()).." - "..os.date("%H:%M:%S",os.time()).." "..txt
-		if sys.simulation==true then print(txt) end
-		if debug_flag==true then
-			write_log(txt)
-		end
-	end
-end
+
 
 
 -- search switch position
@@ -885,7 +934,7 @@ local function paint_sw(widget)
 			w=(widget.w-10)-w
 			h=(widget.h)-h-2
 			lcd.drawText(w,h,txt )
-			deprint("paint_sw Debug Mode: "..debug_mode)
+			--deprint("paint_sw Debug Mode: "..debug_mode)
 		end
 	end
 	
@@ -896,7 +945,6 @@ local function paint_sw(widget)
 	local err_txt=""
 	for i=0,#SWMAP,1 do
 		if SWMAP[i]~=nil then
-			
 			if SWMAP[i][0]=="DIG" and SWMAP[i][2]==1 then 
 				if SWMAP[i][11]~=0 and SWMAP[i][12]~=0 then 
 					SWMAP[i][3]=SWMAP[i][2]
